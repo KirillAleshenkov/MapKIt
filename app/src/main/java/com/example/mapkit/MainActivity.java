@@ -44,17 +44,18 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
         userLocationLayer.setVisible(true);
         userLocationLayer.setHeadingEnabled(true);
         userLocationLayer.setObjectListener((UserLocationObjectListener) this);
+
+        Point marker = (new Point(51.2049, 58.5668));
+        mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
     }
     @Override
     protected void onStop() {
-        // Вызов onStop нужно передавать инстансам MapView и MapKit.
         mapView.onStop();
         MapKitFactory.getInstance().onStop();
         super.onStop();
     }
     @Override
     protected void onStart() {
-        // Вызов onStart нужно передавать инстансам MapView и MapKit.
         super.onStart();
         MapKitFactory.getInstance().onStart();
         mapView.onStart();
