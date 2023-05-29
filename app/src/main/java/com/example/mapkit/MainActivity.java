@@ -1,8 +1,15 @@
 package com.example.mapkit;
 
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Bundle;
 
@@ -14,6 +21,7 @@ import com.yandex.mapkit.layers.ObjectEvent;
 import com.yandex.mapkit.map.CameraPosition;
 import com.yandex.mapkit.map.CompositeIcon;
 import com.yandex.mapkit.map.IconStyle;
+import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.mapkit.map.RotationType;
 import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.user_location.UserLocationLayer;
@@ -25,8 +33,10 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
     private final String MAPKIT_API_KEY = "6953bbfa-0280-46af-a53b-56ece8baa13a";
     private final Point TARGET_LOCATION = new Point(51.2049, 58.5668);
     private MapView mapView;
+    private PlacemarkMapObject Mark;
     private UserLocationLayer userLocationLayer;
-
+    private Context context;
+    private ImageProvider iProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +55,13 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
         userLocationLayer.setHeadingEnabled(true);
         userLocationLayer.setObjectListener((UserLocationObjectListener) this);
 
-        Point marker = (new Point(51.2049, 58.5668));
-        mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
+        //Point marker = (new Point(51.2049, 58.5668));
+        Mark  = mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
+        Mark.setText("Привет");
+        //iProvider.fromResource(this,R.drawable.icon);
+
+        //Mark.setIcon(iProvider);
+        //mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
     }
     @Override
     protected void onStop() {
