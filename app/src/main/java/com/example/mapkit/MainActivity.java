@@ -1,16 +1,18 @@
 package com.example.mapkit;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
+import static com.example.mapkit.R.drawable.icon;
+import static com.example.mapkit.R.drawable.search_result;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.IconKt;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 
@@ -27,16 +29,18 @@ import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.user_location.UserLocationLayer;
 import com.yandex.mapkit.user_location.UserLocationObjectListener;
 import com.yandex.mapkit.user_location.UserLocationView;
+import com.yandex.runtime.bindings.Archive;
 import com.yandex.runtime.image.ImageProvider;
+
+import java.io.File;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements UserLocationObjectListener{
     private final String MAPKIT_API_KEY = "6953bbfa-0280-46af-a53b-56ece8baa13a";
     private final Point TARGET_LOCATION = new Point(51.2049, 58.5668);
     private MapView mapView;
-    private PlacemarkMapObject Mark;
     private UserLocationLayer userLocationLayer;
-    private Context context;
-    private ImageProvider iProvider;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +59,23 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
         userLocationLayer.setHeadingEnabled(true);
         userLocationLayer.setObjectListener((UserLocationObjectListener) this);
 
-        //Point marker = (new Point(51.2049, 58.5668));
-        Mark  = mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
-        Mark.setText("Привет");
-        //iProvider.fromResource(this,R.drawable.icon);
+        String imagePath = "Рабочий стол/icon.png";
+        File imageFile = new File(imagePath);
+        if (imageFile.exists()) {
+            // Загрузка изображения в переменную типа Bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());}
+        else{
+                // Файл с изображением не существует
+        }
+        int resourceId = icon;
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
 
-        //Mark.setIcon(iProvider);
-        //mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277));
+
+        Point mappoint = new Point(55.79, 37.57);
+        mapView.getMap().getMapObjects().addPlacemark(mappoint).setIcon(imageFile);
+
     }
+
     @Override
     protected void onStop() {
         mapView.onStop();
@@ -87,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
 
         pinIcon.setIcon(
                 "icon",
-                ImageProvider.fromResource(this, R.drawable.icon),
+                ImageProvider.fromResource(this, icon),
                 new IconStyle().setAnchor(new PointF(0f, 0f))
                         .setRotationType(RotationType.ROTATE)
                         .setZIndex(0f)
