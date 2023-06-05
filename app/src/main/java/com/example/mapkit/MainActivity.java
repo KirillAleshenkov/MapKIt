@@ -1,18 +1,16 @@
 package com.example.mapkit;
 
-import static com.example.mapkit.R.drawable.icon;
-import static com.example.mapkit.R.drawable.search_result;
+import static androidx.core.content.ContentProviderCompat.requireContext;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.IconKt;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 
 
@@ -29,18 +27,16 @@ import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.user_location.UserLocationLayer;
 import com.yandex.mapkit.user_location.UserLocationObjectListener;
 import com.yandex.mapkit.user_location.UserLocationView;
-import com.yandex.runtime.bindings.Archive;
 import com.yandex.runtime.image.ImageProvider;
-
-import java.io.File;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements UserLocationObjectListener{
     private final String MAPKIT_API_KEY = "6953bbfa-0280-46af-a53b-56ece8baa13a";
     private final Point TARGET_LOCATION = new Point(51.2049, 58.5668);
     private MapView mapView;
+    private PlacemarkMapObject Mark;
     private UserLocationLayer userLocationLayer;
-
+    private Context context;
+    private ImageProvider iProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,31 +47,13 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
         mapView = (MapView)findViewById(R.id.mapview);
         mapView.getMap().setRotateGesturesEnabled(true);
         mapView.getMap().move(new CameraPosition(new Point(0, 0), 14, 0, 0));
-
-
         MapKit mapKit = MapKitFactory.getInstance();
         userLocationLayer = mapKit.createUserLocationLayer(mapView.getMapWindow());
         userLocationLayer.setVisible(true);
         userLocationLayer.setHeadingEnabled(true);
         userLocationLayer.setObjectListener((UserLocationObjectListener) this);
-
-        String imagePath = "Рабочий стол/icon.png";
-        File imageFile = new File(imagePath);
-        if (imageFile.exists()) {
-            // Загрузка изображения в переменную типа Bitmap
-            Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());}
-        else{
-                // Файл с изображением не существует
-        }
-        int resourceId = icon;
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
-
-
-        Point mappoint = new Point(55.79, 37.57);
-        mapView.getMap().getMapObjects().addPlacemark(mappoint).setIcon(imageFile);
-
+        mapView.getMap().getMapObjects().addPlacemark(new Point(51.207970, 58.563277)).setIcon(ImageProvider.fromResource(this, R.drawable.icon));
     }
-
     @Override
     protected void onStop() {
         mapView.onStop();
@@ -92,21 +70,17 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
         userLocationLayer.setAnchor(
                 new PointF((float)(mapView.getWidth() * 0.5), (float)(mapView.getHeight() * 0.5)),
                 new PointF((float)(mapView.getWidth() * 0.5), (float)(mapView.getHeight() * 0.83)));
-
         userLocationView.getArrow().setIcon(ImageProvider.fromResource(
                 this, R.drawable.user_arrow));
-
         CompositeIcon pinIcon = userLocationView.getPin().useCompositeIcon();
-
         pinIcon.setIcon(
                 "icon",
-                ImageProvider.fromResource(this, icon),
+                ImageProvider.fromResource(this, R.drawable.icon),
                 new IconStyle().setAnchor(new PointF(0f, 0f))
                         .setRotationType(RotationType.ROTATE)
                         .setZIndex(0f)
                         .setScale(1f)
         );
-
         pinIcon.setIcon(
                 "pin",
                 ImageProvider.fromResource(this, R.drawable.search_result),
@@ -115,12 +89,10 @@ public class MainActivity extends AppCompatActivity implements UserLocationObjec
                         .setZIndex(1f)
                         .setScale(0.5f)
         );
-
         userLocationView.getAccuracyCircle().setFillColor(Color.BLUE & 0x99ffffff);
     }
     public void onObjectRemoved(UserLocationView view) {
     }
-
     public void onObjectUpdated(UserLocationView view, ObjectEvent event) {
     }
 
